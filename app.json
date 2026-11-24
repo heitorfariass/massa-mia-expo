@@ -2,6 +2,7 @@
   "expo": {
     "name": "massa-mia",
     "slug": "massa-mia",
+    "owner": "mariaclararibeiros-team",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -37,6 +38,22 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "ad246661-26a3-4684-81bd-40d683f9ac61"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ad246661-26a3-4684-81bd-40d683f9ac61"
     }
   }
 }
