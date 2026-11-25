@@ -1,7 +1,9 @@
+import { real } from '@/lib/format';
+
 /** Formata um número como moeda brasileira (R$ 12,50). */
 export function formatCurrency(value: number): string {
   const safe = Number.isFinite(value) ? value : 0;
-  return safe.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  return real(safe);
 }
 
 /** Aplica a máscara DD/MM/AAAA enquanto a pessoa digita. */
