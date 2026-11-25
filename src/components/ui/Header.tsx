@@ -25,6 +25,8 @@ export type HeaderProps = {
   /** Esconde o breadcrumb quando a tela já tem título próprio. */
   showBreadcrumb?: boolean;
   style?: StyleProp<ViewStyle>;
+  /** Cabeçalho compacto dos painéis principais. */
+  variant?: 'default' | 'painel';
 };
 
 /**
@@ -39,6 +41,7 @@ export function Header({
   onBack,
   showBreadcrumb = true,
   style,
+  variant = 'default',
 }: HeaderProps) {
   const router = useRouter();
   const hasBreadcrumb = showBreadcrumb && (Boolean(area) || Boolean(pagina));
@@ -53,6 +56,24 @@ export function Header({
       return;
     }
     router.replace(painel ?? '/');
+  }
+
+  if (variant === 'painel') {
+    return (
+      <View style={[styles.panelHeader, style]}>
+        <Pressable accessibilityRole="link" accessibilityLabel="Massa Mia — ir para a tela inicial" onPress={() => router.replace('/')}>
+          <Image source={logo} style={styles.panelLogo} resizeMode="contain" />
+        </Pressable>
+        <View style={styles.divider} />
+        <Text style={styles.panelArea} numberOfLines={1}>{area}</Text>
+        {onLogout ? (
+          <Pressable accessibilityRole="button" accessibilityLabel="Sair da conta" onPress={onLogout}
+            style={({ pressed }) => [styles.panelLogout, pressed && styles.pressed]}>
+            <Text style={styles.panelLogoutText}>⇥  Sair</Text>
+          </Pressable>
+        ) : null}
+      </View>
+    );
   }
 
   return (
@@ -112,6 +133,12 @@ export function Header({
 }
 
 const styles = StyleSheet.create({
+  panelHeader: { backgroundColor: '#FFEB88', flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, gap: spacing.sm },
+  panelLogo: { width: 100, height: 25 },
+  divider: { height: 25, width: 1, backgroundColor: colors.massaAmarelo[7] },
+  panelArea: { flex: 1, color: colors.danger, fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm },
+  panelLogout: { borderColor: colors.primary, borderWidth: 1, borderRadius: radius.sm, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
+  panelLogoutText: { color: colors.primary, fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm },
   header: {
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
