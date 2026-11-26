@@ -11,6 +11,7 @@ export default function Login() {
   const entrar = useAuth((state) => state.entrar);
   const carregando = useAuth((state) => state.carregando);
   const erro = useAuth((state) => state.erro);
+  const limparErro = useAuth((state) => state.limparErro);
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const proprietario = papel === "proprietario";
@@ -22,6 +23,11 @@ export default function Login() {
     router.replace(
       logado?.papel === "proprietario" ? "/proprietario" : "/funcionario",
     );
+  }
+
+  function irParaCadastro() {
+    limparErro();
+    router.push("/auth/cadastro");
   }
 
   return (
@@ -66,6 +72,16 @@ export default function Login() {
           loading={carregando}
           onPress={handleEntrar}
         />
+        {proprietario ? null : (
+          <Text
+            style={styles.link}
+            accessibilityRole="link"
+            onPress={irParaCadastro}
+          >
+            Ainda não tem conta?{" "}
+            <Text style={styles.linkForte}>Criar conta</Text>
+          </Text>
+        )}
         <Button
           label="Voltar ao início"
           variant="outline"
@@ -106,4 +122,12 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginBottom: spacing.sm,
   },
+  link: {
+    fontFamily: fontFamily.body,
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    textAlign: "center",
+    paddingVertical: spacing.xs,
+  },
+  linkForte: { fontFamily: fontFamily.bodyBold, color: colors.primary },
 });
