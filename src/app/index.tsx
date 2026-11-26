@@ -33,7 +33,6 @@ export default function Home() {
               params: { papel: "proprietario" },
             })
           }
-          disabled={!__DEV__}
         />
         <Button
           label="Funcionário"
@@ -45,7 +44,6 @@ export default function Home() {
               params: { papel: "funcionario" },
             })
           }
-          disabled={!__DEV__}
         />
       </View>
     </Screen>

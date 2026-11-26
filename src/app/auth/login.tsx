@@ -1,16 +1,16 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
 import { AlertMessage, Button, Screen, TextField } from "@/components/ui";
 import { useAuth } from "@/store/auth";
 import { colors, fontFamily, fontSize, radius, spacing } from "@/theme";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function Login() {
   const router = useRouter();
   const { papel } = useLocalSearchParams<{ papel?: string }>();
   const entrar = useAuth((state) => state.entrar);
+  const carregando = useAuth((state) => state.carregando);
   const erro = useAuth((state) => state.erro);
-  const usuarioLogado = useAuth((state) => state.usuario);
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const proprietario = papel === "proprietario";
@@ -18,10 +18,9 @@ export default function Login() {
   async function handleEntrar() {
     const entrou = await entrar(usuario, senha);
     if (!entrou) return;
-    router.push(
-      usuarioLogado?.papel === "proprietario"
-        ? "/proprietario"
-        : "/funcionario",
+    const logado = useAuth.getState().usuario;
+    router.replace(
+      logado?.papel === "proprietario" ? "/proprietario" : "/funcionario",
     );
   }
 
@@ -49,6 +48,8 @@ export default function Login() {
           placeholder="Seu usuário"
           value={usuario}
           onChangeText={setUsuario}
+          autoCapitalize="none"
+          autoCorrect={false}
         />
         <TextField
           label="Senha"
@@ -62,6 +63,7 @@ export default function Login() {
           label="Entrar"
           variant={proprietario ? "danger" : "primary"}
           size="lg"
+          loading={carregando}
           onPress={handleEntrar}
         />
         <Button
