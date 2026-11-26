@@ -1,4 +1,4 @@
-import { Redirect, useRouter } from 'expo-router';
+import { Redirect, useRouter, type Href } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { AlertMessage, Card, Header, Screen } from '@/components/ui';
@@ -27,7 +27,11 @@ export function Painel({ papel, acoes }: PainelProps) {
     router.replace('/');
   }
   function abrirAcao(destino: string) {
-    // Após o merge, navegar para destino usando uma rota validada pelo typedRoutes.
+    // Relatórios já existe; as outras telas entram conforme forem migradas.
+    if (destino === '/relatorios') {
+      router.push('/proprietario/relatorios' as Href);
+      return;
+    }
     void destino;
     setAviso(true);
   }
