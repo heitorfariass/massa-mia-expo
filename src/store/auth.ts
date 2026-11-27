@@ -1,13 +1,11 @@
-// Estado global de autenticação (Zustand). A sessão fica salva no aparelho.
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-
-import * as auth from '@/lib/auth';
-import type { DadosCadastro } from '@/lib/auth';
-import { setAoSessaoInvalida, setSessionToken } from '@/lib/parse';
-import { storage } from '@/lib/storage';
-import type { Usuario } from '@/lib/types';
+import type { DadosCadastro } from "@/lib/auth";
+import * as auth from "@/lib/auth";
+import { setAoSessaoInvalida, setSessionToken } from "@/lib/parse";
+import { storage } from "@/lib/storage";
+import type { Papel, Usuario } from "@/lib/types";
 
 interface AuthState {
   usuario: Usuario | null;
@@ -17,7 +15,11 @@ interface AuthState {
   carregando: boolean;
   erro: string | null;
 
-  entrar: (username: string, password: string) => Promise<boolean>;
+  entrar: (
+    username: string,
+    password: string,
+    papel?: Papel,
+  ) => Promise<boolean>;
   cadastrar: (dados: DadosCadastro) => Promise<boolean>;
   sair: () => Promise<void>;
   limparErro: () => void;
@@ -31,11 +33,27 @@ export const useAuth = create<AuthState>()(
       carregando: false,
       erro: null,
 
-      async entrar(username, password) {
+      async entrar(username, password, papel) {
         set({ carregando: true, erro: null });
         try {
           const usuario = await auth.entrar(username, password);
           setSessionToken(usuario.sessionToken);
+          if (papel && usuario.papel !== papel) {
+            await auth.sair();
+            setSessionToken(null);
+            const area =
+              usuario.papel === "proprietario" ? "proprietário" : "funcionário";
+            set({
+              carregando: false,
+              erro:
+                "Essa conta é de " +
+                area +
+                ". Volte e entre pela área do " +
+                area +
+                ".",
+            });
+            return false;
+          }
           set({ usuario, carregando: false });
           return true;
         } catch (e) {
@@ -66,11 +84,10 @@ export const useAuth = create<AuthState>()(
       limparErro: () => set({ erro: null }),
     }),
     {
-      name: 'massa-mia-auth',
+      name: "massa-mia-auth",
       storage,
       partialize: (estado) => ({ usuario: estado.usuario }),
       onRehydrateStorage: () => (estado) => {
-        // Reabriu o app: devolve o token ao cliente HTTP e confere se ainda vale.
         const token = estado?.usuario?.sessionToken ?? null;
         setSessionToken(token);
         useAuth.setState({ hidratado: true });
@@ -78,18 +95,17 @@ export const useAuth = create<AuthState>()(
           auth
             .buscarUsuarioAtual(token)
             .then((usuario) => useAuth.setState({ usuario }))
-            .catch(() => {
-              // Só desloga se o servidor recusou o token (o aviso vem de setAoSessaoInvalida).
-              // Sem internet, mantém a sessão salva.
-            });
+            .catch(() => {});
         }
       },
     },
   ),
 );
 
-// Token recusado pelo servidor (expirou/foi revogado): volta para o login.
 setAoSessaoInvalida(() => {
   setSessionToken(null);
-  useAuth.setState({ usuario: null, erro: 'Sua sessão expirou. Entre novamente.' });
+  useAuth.setState({
+    usuario: null,
+    erro: "Sua sessão expirou. Entre novamente.",
+  });
 });

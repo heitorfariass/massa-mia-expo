@@ -17,7 +17,7 @@ export default function Login() {
   const proprietario = papel === "proprietario";
 
   function handleEntrar() {
-    entrar(usuario, senha);
+    entrar(usuario, senha, proprietario ? "proprietario" : "funcionario");
   }
 
   function irParaCadastro() {
