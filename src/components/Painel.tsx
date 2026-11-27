@@ -16,7 +16,7 @@ export function Painel({ papel, acoes }: PainelProps) {
   const sair = useAuth((state) => state.sair);
   const limparDados = useDados((state) => state.limpar);
   const [aviso, setAviso] = useState(false);
-  if (!usuario) {
+  if (!usuario || usuario.papel !== papel) {
     return <Redirect href="/" />;
   }
   const proprietario = papel === "proprietario";

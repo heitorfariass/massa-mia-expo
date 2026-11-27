@@ -8,7 +8,13 @@ export default function Home() {
   const router = useRouter();
   const usuario = useAuth((state) => state.usuario);
   if (usuario) {
-    return <Redirect href="/funcionario" />;
+    return (
+      <Redirect
+        href={
+          usuario.papel === "proprietario" ? "/proprietario" : "/funcionario"
+        }
+      />
+    );
   }
   return (
     <Screen
