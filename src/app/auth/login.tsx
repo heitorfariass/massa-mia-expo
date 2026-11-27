@@ -16,13 +16,8 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const proprietario = papel === "proprietario";
 
-  async function handleEntrar() {
-    const entrou = await entrar(usuario, senha);
-    if (!entrou) return;
-    const logado = useAuth.getState().usuario;
-    router.replace(
-      logado?.papel === "proprietario" ? "/proprietario" : "/funcionario",
-    );
+  function handleEntrar() {
+    entrar(usuario, senha);
   }
 
   function irParaCadastro() {

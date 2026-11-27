@@ -24,9 +24,8 @@ export default function Cadastro() {
       setDados((anterior) => ({ ...anterior, [campo]: valor }));
   }
 
-  async function handleCadastrar() {
-    const cadastrou = await cadastrar(dados);
-    if (cadastrou) router.replace("/funcionario");
+  function handleCadastrar() {
+    cadastrar(dados);
   }
 
   function voltarParaLogin() {

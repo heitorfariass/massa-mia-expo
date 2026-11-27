@@ -1,10 +1,15 @@
 import { Button, Screen } from "@/components/ui";
+import { useAuth } from "@/store/auth";
 import { colors, fontFamily, spacing } from "@/theme";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function Home() {
   const router = useRouter();
+  const usuario = useAuth((state) => state.usuario);
+  if (usuario) {
+    return <Redirect href="/funcionario" />;
+  }
   return (
     <Screen
       style={styles.screen}
