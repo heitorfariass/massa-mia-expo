@@ -2,9 +2,15 @@ import { AlertMessage, Button, Screen, TextField } from "@/components/ui";
 import type { DadosCadastro } from "@/lib/auth";
 import { useAuth } from "@/store/auth";
 import { colors, fontFamily, fontSize, radius, spacing } from "@/theme";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useRef, useState } from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  type TextInputInstance,
+} from "react-native";
 
 export default function Cadastro() {
   const router = useRouter();
@@ -18,19 +24,34 @@ export default function Cadastro() {
     username: "",
     password: "",
   });
+  const [confirmacao, setConfirmacao] = useState("");
+  const [erroConfirmacao, setErroConfirmacao] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const emailRef = useRef<TextInputInstance>(null);
+  const usuarioRef = useRef<TextInputInstance>(null);
+  const senhaRef = useRef<TextInputInstance>(null);
+  const confirmacaoRef = useRef<TextInputInstance>(null);
+
+  useFocusEffect(useCallback(() => () => limparErro(), [limparErro]));
 
   function alterar(campo: keyof DadosCadastro) {
-    return (valor: string) =>
+    return (valor: string) => {
       setDados((anterior) => ({ ...anterior, [campo]: valor }));
+      if (erro) limparErro();
+    };
+  }
+
+  function alterarConfirmacao(valor: string) {
+    setConfirmacao(valor);
+    setErroConfirmacao("");
   }
 
   function handleCadastrar() {
+    if (dados.password !== confirmacao) {
+      setErroConfirmacao("As senhas não conferem.");
+      return;
+    }
     cadastrar(dados);
-  }
-
-  function voltarParaLogin() {
-    limparErro();
-    router.back();
   }
 
   return (
@@ -54,8 +75,12 @@ export default function Cadastro() {
           value={dados.nome}
           onChangeText={alterar("nome")}
           autoCapitalize="words"
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => emailRef.current?.focus()}
         />
         <TextField
+          ref={emailRef}
           label="E-mail"
           placeholder="seuemail@exemplo.com"
           value={dados.email}
@@ -63,23 +88,52 @@ export default function Cadastro() {
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => usuarioRef.current?.focus()}
         />
         <TextField
+          ref={usuarioRef}
           label="Usuário"
           placeholder="Escolha um usuário"
           value={dados.username}
           onChangeText={alterar("username")}
           autoCapitalize="none"
           autoCorrect={false}
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => senhaRef.current?.focus()}
         />
         <TextField
+          ref={senhaRef}
           label="Senha"
           placeholder="Crie uma senha"
           value={dados.password}
           onChangeText={alterar("password")}
-          secureTextEntry
+          secureTextEntry={!mostrarSenha}
           hint="Mínimo de 6 caracteres"
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => confirmacaoRef.current?.focus()}
         />
+        <TextField
+          ref={confirmacaoRef}
+          label="Confirmar senha"
+          placeholder="Repita a senha"
+          value={confirmacao}
+          onChangeText={alterarConfirmacao}
+          secureTextEntry={!mostrarSenha}
+          error={erroConfirmacao || undefined}
+          returnKeyType="go"
+          onSubmitEditing={handleCadastrar}
+        />
+        <Text
+          style={styles.mostrar}
+          accessibilityRole="button"
+          onPress={() => setMostrarSenha(!mostrarSenha)}
+        >
+          {mostrarSenha ? "Ocultar senhas" : "Mostrar senhas"}
+        </Text>
         {erro ? <AlertMessage variant="error" message={erro} /> : null}
         <Button
           label="Criar conta"
@@ -90,7 +144,7 @@ export default function Cadastro() {
         <Text
           style={styles.link}
           accessibilityRole="link"
-          onPress={voltarParaLogin}
+          onPress={() => router.back()}
         >
           Já tem conta? <Text style={styles.linkForte}>Entrar</Text>
         </Text>
@@ -128,6 +182,13 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xl,
     color: colors.text,
     marginBottom: spacing.sm,
+  },
+  mostrar: {
+    fontFamily: fontFamily.bodyBold,
+    fontSize: fontSize.xs,
+    color: colors.primary,
+    alignSelf: "flex-end",
+    marginTop: -spacing.xs,
   },
   link: {
     fontFamily: fontFamily.body,

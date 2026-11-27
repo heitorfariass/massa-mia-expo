@@ -1,9 +1,15 @@
 import { AlertMessage, Button, Screen, TextField } from "@/components/ui";
 import { useAuth } from "@/store/auth";
 import { colors, fontFamily, fontSize, radius, spacing } from "@/theme";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useRef, useState } from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  type TextInputInstance,
+} from "react-native";
 
 export default function Login() {
   const router = useRouter();
@@ -14,15 +20,21 @@ export default function Login() {
   const limparErro = useAuth((state) => state.limparErro);
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const senhaRef = useRef<TextInputInstance>(null);
   const proprietario = papel === "proprietario";
+
+  useFocusEffect(useCallback(() => () => limparErro(), [limparErro]));
+
+  function digitar(setter: (valor: string) => void) {
+    return (valor: string) => {
+      setter(valor);
+      if (erro) limparErro();
+    };
+  }
 
   function handleEntrar() {
     entrar(usuario, senha, proprietario ? "proprietario" : "funcionario");
-  }
-
-  function irParaCadastro() {
-    limparErro();
-    router.push("/auth/cadastro");
   }
 
   return (
@@ -48,17 +60,30 @@ export default function Login() {
           label="Usuário"
           placeholder="Seu usuário"
           value={usuario}
-          onChangeText={setUsuario}
+          onChangeText={digitar(setUsuario)}
           autoCapitalize="none"
           autoCorrect={false}
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => senhaRef.current?.focus()}
         />
         <TextField
+          ref={senhaRef}
           label="Senha"
           placeholder="Sua senha"
           value={senha}
-          onChangeText={setSenha}
-          secureTextEntry
+          onChangeText={digitar(setSenha)}
+          secureTextEntry={!mostrarSenha}
+          returnKeyType="go"
+          onSubmitEditing={handleEntrar}
         />
+        <Text
+          style={styles.mostrar}
+          accessibilityRole="button"
+          onPress={() => setMostrarSenha(!mostrarSenha)}
+        >
+          {mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+        </Text>
         {erro ? <AlertMessage variant="error" message={erro} /> : null}
         <Button
           label="Entrar"
@@ -71,7 +96,7 @@ export default function Login() {
           <Text
             style={styles.link}
             accessibilityRole="link"
-            onPress={irParaCadastro}
+            onPress={() => router.push("/auth/cadastro")}
           >
             Ainda não tem conta?{" "}
             <Text style={styles.linkForte}>Criar conta</Text>
@@ -116,6 +141,13 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xl,
     color: colors.text,
     marginBottom: spacing.sm,
+  },
+  mostrar: {
+    fontFamily: fontFamily.bodyBold,
+    fontSize: fontSize.xs,
+    color: colors.primary,
+    alignSelf: "flex-end",
+    marginTop: -spacing.xs,
   },
   link: {
     fontFamily: fontFamily.body,
