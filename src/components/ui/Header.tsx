@@ -30,8 +30,9 @@ export type HeaderProps = {
 };
 
 /**
- * Porte do `Cabecalho` do site: logo, caminho "Área › Página",
- * atalho para voltar ao painel e sair.
+ * Barra superior das telas internas: fundo amarelo, logo centralizada,
+ * seta de voltar à esquerda e caminho "Área › Página" sob a logo.
+ * A variante `painel` é a barra compacta usada nos painéis principais.
  */
 export function Header({
   area,
@@ -78,56 +79,46 @@ export function Header({
 
   return (
     <View style={[styles.header, style]}>
-      <View style={styles.topRow}>
-        <Pressable
-          accessibilityRole="link"
-          accessibilityLabel="Massa Mia — ir para a tela inicial"
-          hitSlop={8}
-          onPress={() => router.replace('/')}
-        >
-          <Image source={logo} style={styles.logo} resizeMode="contain" />
-        </Pressable>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Voltar"
+        hitSlop={8}
+        onPress={goBack}
+        style={({ pressed }) => [styles.side, pressed ? styles.pressed : null]}
+      >
+        <Text style={styles.backText}>←</Text>
+      </Pressable>
 
-        {onLogout ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Sair da conta"
-            hitSlop={8}
-            onPress={onLogout}
-            style={({ pressed }) => [styles.logout, pressed ? styles.pressed : null]}
-          >
-            <Text style={styles.logoutText}>Sair</Text>
-          </Pressable>
-        ) : null}
-      </View>
-
-      {hasBreadcrumb ? (
-        <View style={styles.bottomRow}>
+      <Pressable
+        accessibilityRole="link"
+        accessibilityLabel="Massa Mia — ir para a tela inicial"
+        hitSlop={8}
+        onPress={() => router.replace('/')}
+        style={styles.center}
+      >
+        <Image source={logo} style={styles.logo} resizeMode="contain" />
+        {hasBreadcrumb ? (
           <Text style={styles.breadcrumb} numberOfLines={1}>
-            {area ? (
-              <Text
-                style={styles.breadcrumbLink}
-                accessibilityRole={painel ? 'link' : undefined}
-                onPress={painel ? () => router.push(painel) : undefined}
-              >
-                {area}
-              </Text>
-            ) : null}
+            {area}
             {area && pagina ? ' › ' : null}
             {pagina ?? ''}
           </Text>
+        ) : null}
+      </Pressable>
 
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Voltar ao painel"
-            hitSlop={8}
-            onPress={goBack}
-            style={({ pressed }) => [styles.back, pressed ? styles.pressed : null]}
-          >
-            <Text style={styles.backText}>← Voltar</Text>
-          </Pressable>
-        </View>
-      ) : null}
+      {onLogout ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Sair da conta"
+          hitSlop={8}
+          onPress={onLogout}
+          style={({ pressed }) => [styles.side, styles.sideRight, pressed ? styles.pressed : null]}
+        >
+          <Text style={styles.logoutText}>Sair</Text>
+        </Pressable>
+      ) : (
+        <View style={styles.side} />
+      )}
     </View>
   );
 }
@@ -139,61 +130,50 @@ const styles = StyleSheet.create({
   panelArea: { flex: 1, color: colors.danger, fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm },
   panelLogout: { borderColor: colors.primary, borderWidth: 1, borderRadius: radius.sm, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs },
   panelLogoutText: { color: colors.primary, fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm },
+
+  // Barra amarela com a logo centralizada.
   header: {
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.md,
-    gap: spacing.sm,
-  },
-  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: spacing.md,
+    backgroundColor: '#FFEB88',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.massaAmarelo[7],
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  side: {
+    width: 44,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  sideRight: {
+    alignItems: 'flex-end',
+  },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
   },
   logo: {
     width: 132,
     height: 33,
   },
-  logout: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: radius.sm,
-    borderWidth: 1.5,
-    borderColor: colors.danger,
+  breadcrumb: {
+    fontFamily: fontFamily.body,
+    fontSize: fontSize.xs,
+    color: colors.danger,
+  },
+  backText: {
+    fontFamily: fontFamily.bodyBold,
+    fontSize: 22,
+    color: colors.danger,
   },
   logoutText: {
     fontFamily: fontFamily.bodyBold,
     fontSize: fontSize.sm,
     color: colors.danger,
-  },
-  bottomRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: spacing.md,
-  },
-  breadcrumb: {
-    flex: 1,
-    fontFamily: fontFamily.body,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-  },
-  breadcrumbLink: {
-    fontFamily: fontFamily.bodyBold,
-    color: colors.primary,
-    textDecorationLine: 'underline',
-  },
-  back: {
-    paddingVertical: spacing.xs,
-  },
-  backText: {
-    fontFamily: fontFamily.bodyBold,
-    fontSize: fontSize.xs,
-    color: colors.primary,
   },
   pressed: {
     opacity: 0.6,

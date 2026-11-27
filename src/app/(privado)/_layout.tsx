@@ -1,6 +1,6 @@
-import { AlertMessage, Screen } from "@/components/ui";
-import { useAuth } from "@/store/auth";
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Stack } from 'expo-router';
+import { AlertMessage, Screen } from '@/components/ui';
+import { useAuth } from '@/store/auth';
 
 export default function PrivateLayout() {
   const hidratado = useAuth((state) => state.hidratado);

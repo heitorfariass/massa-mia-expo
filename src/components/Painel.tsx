@@ -1,11 +1,11 @@
-import { AlertMessage, Card, Header, Screen } from "@/components/ui";
-import type { Papel } from "@/lib/types";
-import { useAuth } from "@/store/auth";
-import { useDados } from "@/store/dados";
-import { colors, fontFamily, fontSize, spacing } from "@/theme";
-import { Redirect, useRouter } from "expo-router";
-import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Redirect, useRouter, type Href } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { AlertMessage, Card, Header, Screen } from '@/components/ui';
+import type { Papel } from '@/lib/types';
+import { useAuth } from '@/store/auth';
+import { useDados } from '@/store/dados';
+import { colors, fontFamily, fontSize, spacing } from '@/theme';
 
 type Acao = { titulo: string; descricao: string; destino: string };
 type PainelProps = { papel: Papel; acoes: Acao[] };
@@ -27,7 +27,11 @@ export function Painel({ papel, acoes }: PainelProps) {
     router.replace("/");
   }
   function abrirAcao(destino: string) {
-    // Após o merge, navegar para destino usando uma rota validada pelo typedRoutes.
+    // Relatórios já existe; as outras telas entram conforme forem migradas.
+    if (destino === '/relatorios') {
+      router.push('/proprietario/relatorios' as Href);
+      return;
+    }
     void destino;
     setAviso(true);
   }
