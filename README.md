@@ -90,3 +90,29 @@ flowchart LR
     D --> E[("🗄️ Produto · Pedido<br/>Evento · ItemProduto")]
     F["🇧🇷 BrasilAPI<br/>feriados nacionais"] -.->|"agendamento<br/>de eventos"| A
 ```
+
+## ☁️ Configurando o Back4App
+
+O app usa o mesmo banco do site (Back4App). Para rodar localmente:
+
+1. **Chaves de acesso** — copie o `.env.example` para `.env.local` e preencha com as chaves do app no Back4App (_App Settings › Security & Keys_):
+
+   ```env
+   PARSE_SERVER_URL=https://parseapi.back4app.com
+   PARSE_APP_ID=sua_application_id
+   PARSE_JS_KEY=sua_javascript_key
+   ```
+
+   Use só as chaves públicas (Application ID e JavaScript Key) — a **Master Key nunca** entra no app.
+
+2. **Reinicie o Expo** para ele ler as variáveis novas:
+
+   ```bash
+   npx expo start
+   ```
+
+3. **Conta de proprietário** — o cadastro pelo app sempre cria funcionário. Para ter um proprietário, abra a classe `_User` no Back4App (_Database › Browser_), crie a coluna `papel` (tipo **String**) e preencha `Proprietário` no usuário desejado.
+
+4. **Coluna `nome`** — se o cadastro der erro de permissão (`addField`), crie em `_User` a coluna `nome` (tipo **String**).
+
+5. **Publicação** — o `eas update` grava as chaves no app publicado, então o `.env.local` precisa existir na máquina de quem publica.
