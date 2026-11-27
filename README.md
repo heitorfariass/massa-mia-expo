@@ -16,24 +16,35 @@ Navegação real pelo aplicativo mobile: tela de entrada, área do proprietário
 
 ![Demonstração do Massa Mia Mobile](docs/demo.gif) <!-- [PLACEHOLDER: substituir pelo GIF do app mobile] -->
 
-⚡ *Gravação real do aplicativo rodando no emulador / Expo Go.*
+⚡ _Gravação real do aplicativo rodando no emulador / Expo Go._
 
-| Acesso | Link |
-|---|---|
-| 📱 Build / Expo Go / APK | *[PLACEHOLDER: link do Expo / EAS Build ou APK]* |
-| 📺 Vídeo completo no YouTube (demonstração com CRUD) | *[PLACEHOLDER: link do vídeo no YouTube]* |
-| 🌐 Versão Web original (Atividade anterior) | *[link](https://massa-mia.vercel.app)* |
+| Acesso                                               | Link                                             |
+| ---------------------------------------------------- | ------------------------------------------------ |
+| 📱 Build / Expo Go / APK                             | _[PLACEHOLDER: link do Expo / EAS Build ou APK]_ |
+| 📺 Vídeo completo no YouTube (demonstração com CRUD) | _[PLACEHOLDER: link do vídeo no YouTube]_        |
+| 🌐 Versão Web original (Atividade anterior)          | _[link](https://massa-mia.vercel.app)_           |
+
+## 🔑 Contas de teste
+
+Use estas contas para entrar no app (valem também para o link publicado no Expo):
+
+| Área         | Usuário        | Senha      |
+| ------------ | -------------- | ---------- |
+| Proprietário | `proprietario` | `massa123` |
+| Funcionário  | `funcionario`  | `massa123` |
+
+Na tela inicial, toque em **Proprietário** ou **Funcionário** e entre com a conta da mesma área — se a conta for de outra área, o app avisa. Na área do funcionário também dá para criar uma conta nova em **Criar conta**.
 
 ## 🎯 O projeto
 
 O Massa Mia nasceu como um programa Java no terminal, evoluiu para um site em Next.js na atividade anterior e agora ganha sua **versão mobile com Expo (React Native)** para a disciplina de **Web Mobile**. O objetivo é resolver uma limitação da versão anterior (pensada apenas para desktop), permitindo que garçons, atendentes e o proprietário operem o sistema diretamente pelo celular, compartilhando o mesmo banco de dados na nuvem (Back4App).
 
-| Versão Web Anterior 💻 | Nova Versão Mobile (Expo) 📱 |
-|---|---|
-| Interface focada em telas grandes (desktop) | Interface responsiva e nativa para Android, iOS e Web |
-| Navegação via rotas web (Next.js App Router) | Navegação mobile nativa (Expo Router / Tabs / Stack) |
-| Tabelas extensas com ordenação via URL | Listas otimizadas para toque, cartões e filtros rápidos |
-| Mesma base de dados e regras de negócio | Reaproveitamento total do backend e Cloud Code no Back4App |
+| Versão Web Anterior 💻                       | Nova Versão Mobile (Expo) 📱                               |
+| -------------------------------------------- | ---------------------------------------------------------- |
+| Interface focada em telas grandes (desktop)  | Interface responsiva e nativa para Android, iOS e Web      |
+| Navegação via rotas web (Next.js App Router) | Navegação mobile nativa (Expo Router / Tabs / Stack)       |
+| Tabelas extensas com ordenação via URL       | Listas otimizadas para toque, cartões e filtros rápidos    |
+| Mesma base de dados e regras de negócio      | Reaproveitamento total do backend e Cloud Code no Back4App |
 
 ## ✨ Funcionalidades
 
@@ -53,18 +64,18 @@ O Massa Mia nasceu como um programa Java no terminal, evoluiu para um site em Ne
 **Detalhes técnicos e experiência mobile:**
 
 - ✅ **Validação em camadas** — validação nos formulários do app e validação rigorosa no servidor via Cloud Code (Back4App).
-- 🏷️ **Status em badges coloridas** — *Servido*, *Cancelado*, *Agendado* e *Realizado* com leitura visual imediata.
-- 🛡️ **Tratamento de estados e erros** — indicadores de carregamento (*loading*), estados vazios amigáveis e tratamento de falhas de conexão sem quebrar o app.
+- 🏷️ **Status em badges coloridas** — _Servido_, _Cancelado_, _Agendado_ e _Realizado_ com leitura visual imediata.
+- 🛡️ **Tratamento de estados e erros** — indicadores de carregamento (_loading_), estados vazios amigáveis e tratamento de falhas de conexão sem quebrar o app.
 - ♿ **Usabilidade e feedback** — alertas nativos de confirmação antes de exclusões e feedback visual claro em cada ação.
 
 ## 🖼️ As telas
 
-| Entrada — "Quem vai entrar?" | Relatórios do proprietário |
-|---|---|
+| Entrada — "Quem vai entrar?"                                                      | Relatórios do proprietário                                                          |
+| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | ![Tela inicial](docs/screenshots/inicio.png) <!-- [PLACEHOLDER: print mobile] --> | ![Relatórios](docs/screenshots/relatorios.png) <!-- [PLACEHOLDER: print mobile] --> |
 
-| Registrar venda — total ao vivo | Lista de vendas / eventos |
-|---|---|
+| Registrar venda — total ao vivo                                                               | Lista de vendas / eventos                                                       |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | ![Registrar venda](docs/screenshots/registrar-venda.png) <!-- [PLACEHOLDER: print mobile] --> | ![Listagem](docs/screenshots/listagem.png) <!-- [PLACEHOLDER: print mobile] --> |
 
 ## 🧠 Arquitetura
@@ -78,3 +89,4 @@ flowchart LR
     C --> D["Cloud Code<br/>Validações e 9 relatórios"]
     D --> E[("🗄️ Produto · Pedido<br/>Evento · ItemProduto")]
     F["🇧🇷 BrasilAPI<br/>feriados nacionais"] -.->|"agendamento<br/>de eventos"| A
+```
