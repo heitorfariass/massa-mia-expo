@@ -32,6 +32,10 @@ export function Painel({ papel, acoes }: PainelProps) {
       router.push('/proprietario/relatorios' as Href);
       return;
     }
+    if (destino === '/vendas/nova') {
+      router.push('/funcionario/vendas/nova' as Href);
+      return;
+    }
     void destino;
     setAviso(true);
   }
